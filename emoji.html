@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>😊 Emoji Mode | Emotion Recommender</title>
+<style>
+body {
+  font-family: Poppins, sans-serif;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: white;
+  text-align: center;
+  margin-top: 60px;
+}
+.emoji {
+  font-size: 3em;
+  margin: 20px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.emoji:hover { transform: scale(1.2); }
+.track {
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+  margin: 10px;
+  display: inline-block;
+  width: 250px;
+  padding: 10px;
+}
+.track img { width: 100%; border-radius: 10px; }
+</style>
+</head>
+<body>
+  <h1>😊 Select Your Emotion</h1>
+  <div>
+    <span class="emoji" onclick="sendEmotion('happy')">😊</span>
+    <span class="emoji" onclick="sendEmotion('sad')">😢</span>
+    <span class="emoji" onclick="sendEmotion('angry')">😡</span>
+    <span class="emoji" onclick="sendEmotion('neutral')">😐</span>
+  </div>
+  <h3 id="emotionText">Emotion: Not selected</h3>
+  <div id="songs"></div>
+
+  <script>
+  async function sendEmotion(emotion) {
+    const res = await fetch('/emoji_select', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ emotion })
+    });
+    const data = await res.json();
+    document.getElementById("emotionText").innerText = `Emotion: ${data.emotion}`;
+    const songsDiv = document.getElementById("songs");
+    songsDiv.innerHTML = data.tracks.map(t => `
+      <div class="track">
+        <img src="${t.album_cover}">
+        <h4>${t.name}</h4>
+        <p>${t.artists}</p>
+        ${t.preview_url ? `<audio controls src="${t.preview_url}"></audio>` : ""}
+        <br><a href="${t.spotify_url}" target="_blank">Open in Spotify</a>
+      </div>
+    `).join("");
+  }
+  </script>
+</body>
+</html>

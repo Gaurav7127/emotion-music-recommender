@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>🎥 Webcam Mode | Emotion Recommender</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<style>
+body {
+  font-family: Poppins, sans-serif;
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  color: white;
+  text-align: center;
+}
+#videoFeed {
+  width: 420px;
+  border: 3px solid #00bcd4;
+  border-radius: 10px;
+}
+.track {
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+  margin: 10px;
+  display: inline-block;
+  width: 250px;
+  padding: 10px;
+}
+.track img { width: 100%; border-radius: 10px; }
+button {
+  background: #00bcd4;
+  border: none;
+  color: white;
+  padding: 12px 20px;
+  margin: 1px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+button:hover { background: #0097a7; }
+</style>
+</head>
+<body>
+  <h1>🎥 Webcam Emotion Detection</h1>
+  <img id="videoFeed" src="/video_feed" alt="Webcam feed">
+  <h3 id="emotionText">Emotion: Not detected yet</h3>
+  <button onclick="detectEmotion()">Detect Emotion</button>
+  <div id="songs"></div>
+
+  <script>
+  async function detectEmotion() {
+    const res = await fetch('/get_emotion');
+    const data = await res.json();
+    document.getElementById("emotionText").innerText = `Detected Emotion: ${data.emotion}`;
+    const songsDiv = document.getElementById("songs");
+    songsDiv.innerHTML = data.tracks.map(t => `
+      <div class="track">
+        <img src="${t.album_cover}">
+        <h4>${t.name}</h4>
+        <p>${t.artists}</p>
+        ${t.preview_url ? `<audio controls src="${t.preview_url}"></audio>` : ""}
+        <br><a href="${t.spotify_url}" target="_blank">Open in Spotify</a>
+      </div>
+    `).join("");
+  }
+  </script>
+</body>
+</html>

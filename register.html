@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register | Emotion Music Recommender 🎶</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    h1 {
+      color: #00e5ff;
+      margin-bottom: 10px;
+    }
+
+    form {
+      background: rgba(255,255,255,0.05);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0,255,255,0.1);
+      display: flex;
+      flex-direction: column;
+      width: 300px;
+      text-align: center;
+    }
+
+    input {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-size: 1em;
+    }
+
+    input::placeholder {
+      color: #ccc;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px;
+      background: #00bcd4;
+      border: none;
+      color: #fff;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 1em;
+    }
+
+    button:hover {
+      background: #0097a7;
+      transform: scale(1.05);
+    }
+
+    p {
+      margin-top: 15px;
+      color: #aaa;
+      font-size: 0.9em;
+    }
+
+    a {
+      color: #00e5ff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎧 Emotion Music Recommender</h1>
+  <form method="POST" action="/register">
+    <input type="text" name="username" placeholder="Create Username" required>
+    <input type="password" name="password" placeholder="Create Password" required>
+    <button type="submit">Register</button>
+    <p>Already have an account? <a href="/login">Login</a></p>
+  </form>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "abc": {
+    "password": "scrypt:32768:8:1$5akgjcSG95nqrvLj$94679e407ef0e8566a2bfd1c7e0e80a87898501a76404c948a0de87f4655155c9b6d9692e9481d33c53dfe0391578e217c02a396cdcc1a4548b29fae307d13da",
+    "spotify": null
+  },
+  "abcd": {
+    "password": "scrypt:32768:8:1$hQvgG6iAtI7eElia$2c08c68609f8777fe949b2979130553ad1addfbb26d4ec6530df994237f78f409190dd5f4e578e7927b52b3fcdc1c88f34aa1911d67f3007fa72b92216b0ae02",
+    "spotify": null
+  }
+}

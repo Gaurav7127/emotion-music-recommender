@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Emotion Music Recommender 🎵</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #fff;
+      height: 100vh;
+      overflow-x: hidden;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    header h2 {
+      margin: 0;
+      color: #00e5ff;
+    }
+
+    .logout-btn {
+      text-decoration: none;
+      background: #00bcd4;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+
+    .logout-btn:hover {
+      background: #0097a7;
+      transform: scale(1.05);
+    }
+
+    .main {
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-start;
+      padding: 30px;
+      flex-wrap: wrap;
+    }
+
+    .camera-box, .songs-box {
+      width: 45%;
+      min-width: 350px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,255,255,0.1);
+      backdrop-filter: blur(10px);
+      transition: all 0.4s;
+    }
+
+    .camera-box:hover, .songs-box:hover {
+      transform: scale(1.02);
+    }
+
+    video {
+      width: 100%;
+      border-radius: 10px;
+      border: 2px solid #00bcd4;
+      box-shadow: 0 0 15px rgba(0,255,255,0.3);
+    }
+
+    button {
+      background: #00bcd4;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      margin-top: 15px;
+      cursor: pointer;
+      color: #fff;
+      font-size: 1em;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #0097a7;
+      transform: scale(1.05);
+    }
+
+    h3, h4 {
+      color: #00e5ff;
+    }
+
+    #emotionLabel {
+      font-size: 1.2em;
+      margin-top: 10px;
+      color: #ffea00;
+      text-shadow: 0 0 10px rgba(255, 234, 0, 0.7);
+    }
+
+    .song-card {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin: 15px 0;
+      padding: 10px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,255,255,0.1);
+      transition: transform 0.3s;
+    }
+
+    .song-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .song-card img {
+      width: 70px;
+      height: 70px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+
+    .song-info {
+      flex: 1;
+      text-align: left;
+    }
+
+    .song-info strong {
+      display: block;
+      font-size: 1.1em;
+    }
+
+    .song-info small {
+      color: #aaa;
+    }
+
+    audio {
+      width: 100%;
+      margin-top: 5px;
+    }
+
+    @media (max-width: 768px) {
+      .main { flex-direction: column; align-items: center; }
+      .camera-box, .songs-box { width: 90%; margin-bottom: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>🎧 Emotion Music Recommender</h2>
+  </header>
+
+  <div class="main">
+    <!-- Left: Webcam -->
+    <div class="camera-box">
+      <h3>Welcome, {{ username }} 👋</h3>
+      <video id="video" autoplay></video>
+      <h4 id="emotionLabel">Emotion: Not detected yet</h4>
+      <button onclick="startCamera()">🎥 Start Camera</button>
+    </div>
+
+    <!-- Right: Songs -->
+    <div class="songs-box">
+      <h3>Recommended Songs 🎶</h3>
+      <div id="tracks"></div>
+    </div>
+  </div>
+
+  <script>
+    let video = document.getElementById("video");
+    let emotionLabel = document.getElementById("emotionLabel");
+    let currentEmotion = "neutral";
+
+    async function startCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+        console.log("✅ Webcam started");
+      } catch (err) {
+        alert("Please allow camera access!");
+        console.error(err);
+      }
+    }
+
+    async function captureEmotion() {
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imgData = canvas.toDataURL("image/jpeg");
+
+        const res = await fetch("/api/emotion", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image: imgData })
+        });
+
+        const data = await res.json();
+        if (data.emotion) {
+          currentEmotion = data.emotion;
+          emotionLabel.innerText = `Emotion: ${currentEmotion.toUpperCase()}`;
+          emotionLabel.style.color = "#00ffcc";
+          getRecommendations();
+        } else {
+          emotionLabel.innerText = "No face detected 😐";
+        }
+      } catch (err) {
+        console.error("Emotion detection error:", err);
+        emotionLabel.innerText = "Error detecting emotion";
+      }
+    }
+
+    async function getRecommendations() {
+      const res = await fetch("/api/recommend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ emotion: currentEmotion, lang: "both" })
+      });
+      const data = await res.json();
+
+      const container = document.getElementById("tracks");
+      container.innerHTML = "";
+
+      if (!data.tracks || data.tracks.length === 0) {
+        container.innerHTML = "<p>No songs found 😢</p>";
+        return;
+      }
+
+      data.tracks.forEach(track => {
+        const div = document.createElement("div");
+        div.className = "song-card";
+        div.innerHTML = `
+          <img src="${track.album_cover}" alt="Cover">
+          <div class="song-info">
+            <strong>${track.name}</strong>
+            <small>${track.artists}</small><br>
+            ${track.preview_url
+              ? `<audio controls src="${track.preview_url}"></audio>`
+              : `<small>No preview available</small>`}
+            <br>
+            <a href="${track.spotify_url}" target="_blank">Open in Spotify</a>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // Detect emotion every 3 seconds automatically
+    setInterval(() => {
+      if (video.srcObject) captureEmotion();
+    }, 3000);
+  </script>
+</body>
+</html>

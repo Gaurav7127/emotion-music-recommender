@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Choose Your Mode 🎭 | Moodify</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.3em;
+      margin-bottom: 10px;
+      color: #00e5ff;
+    }
+
+    h3 {
+      font-weight: 400;
+      margin-bottom: 30px;
+      color: #ccc;
+    }
+
+    .mode-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background: #00bcd4;
+      border: none;
+      color: white;
+      padding: 15px 35px;
+      font-size: 1.2em;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    button:hover {
+      background: #0097a7;
+      transform: scale(1.05);
+    }
+
+    .emoji {
+      font-size: 1.5em;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 20px;
+      font-size: 0.9em;
+      color: #aaa;
+    }
+
+    .footer a {
+      color: #00e5ff;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎧 Moodify</h1>
+  <h3>How would you like to detect your mood?</h3>
+
+  <p class="intro">
+    Let your emotions pick the perfect playlist!  
+    Choose whether you want Moodify to <strong>analyze your mood</strong> using your webcam  
+    or simply <strong>select an emoji</strong> that matches how you feel today. 💫
+  </p>
+
+  <div class="mode-buttons">
+    <button onclick="window.location.href='/webcam'">🎥 Use Webcam</button>
+    <button onclick="window.location.href='/emoji'">😊 Use Emoji</button>
+  </div>
+</body>
+</html>
