@@ -81,7 +81,6 @@ MarkupSafe==3.0.2
 matplotlib==3.10.7
 mcp==1.12.3
 mdurl==0.1.2
-mediapipe==0.10.21
 ml_dtypes==0.5.3
 moviepy==1.0.3
 mpmath==1.3.0
@@ -169,3 +168,4 @@ wheel==0.45.1
 wrapt==2.0.0
 yarl==1.20.1
 zipp==3.23.0
+
